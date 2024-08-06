@@ -1,0 +1,1 @@
+3 Raspberry Pi devices collect in monitor mode capture and analyse probe requests of a wifi-enabled device. After extarction of RSSI data, the approximate location is determined using triangulation technique.
