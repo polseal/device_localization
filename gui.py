@@ -3,7 +3,7 @@ import tkinter as tk
 from location import calculate_estimated_position
 
 root = tk.Tk()
-root.title("Device localization")
+root.title("Device localization solution")
 
 def get_and_plot_coordinates():
     position = calculate_estimated_position()

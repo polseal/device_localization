@@ -52,7 +52,7 @@ def on_new_client(clientsocket):
     conn.close()
     clientsocket.close()
 
-#HOST = "0.0.0.0"
+#HOST = "0.0.0.0" for testing
 HOST = "192.168.137.1"
 PORT = 65432
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

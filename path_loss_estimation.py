@@ -35,7 +35,7 @@ def path_loss_param_calculation():
     n = -slope / 10
     C = intercept
     r_squared = r_value ** 2
-    print(f"Estimated value of n: {n}")
-    print(f"Estimated value of C: {C}")
+    print(f"Estimated value of n is: {n}")
+    print(f"Estimated value of C is: {C}")
     print(f"R^2 value: {r_squared}")
     return n, C

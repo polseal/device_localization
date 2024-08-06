@@ -57,8 +57,6 @@ def calculate_estimated_position():
     median_rssi_B = np.median(treat_outliers(rssi_values_B))
     median_rssi_C = np.median(treat_outliers(rssi_values_C))
 
-    # median_rssi = np.array([median_rssi_A, median_rssi_B, median_rssi_C])
-
     distances = 10 ** ((np.array([median_rssi_A, median_rssi_B, median_rssi_C]) - C) / (-10 * nu))
     e, f, g = distances
 

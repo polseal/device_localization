@@ -48,7 +48,7 @@ def on_client(clientsocket, db_file='database.sqlite'):
             break
         print("received: {}".format(data))
         add_row_to_table(data, conn)
-        clientsocket.send(b"collection for this is done")
+        clientsocket.send(b"Collection for this is done")
 
     conn.close()
     clientsocket.close()
