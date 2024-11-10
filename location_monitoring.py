@@ -8,31 +8,40 @@ from datetime import datetime
 
 
 def split_row(row):
-    row = row.strip("'")
-    timestamp_str, rest = row.split(' UTC ', 1)
-    timestamp_str = timestamp_str[:-3]
-    timestamp = datetime.strptime(timestamp_str, '%b %d, %Y %H:%M:%S.%f')
-    pattern = r'"([^"]*)"|\(([^)]*)\)'
-    matches = re.findall(pattern, rest)
-    source_mac = matches[0][0]
-    dest_mac = matches[1][0]
-    rssi = int(matches[2][0])
-    point = matches[3][1]
-    return (timestamp, source_mac, dest_mac, rssi, point)
+    rows = []
+    for line in row.strip().split("\n"):
+        parts = line.split()
+        if len(parts) >= 6:
+            timestamp = f"{parts[0]} {parts[1]} {parts[2]} {parts[3]}"  # Combine date and time components
+            mac = parts[5]
+            broadcast_mac = parts[6]
+            # Check if signal strength exists (it may be absent in some cases)
+            signal_strength = parts[7] if len(parts) > 7 else None
+            point = parts[8]
+            # Store the data in a dictionary
+            rows.append({
+                "Timestamp": timestamp,
+                "Destination_MAC": mac,
+                "Source_MAC": broadcast_mac,
+                "RSSI": signal_strength,
+                "Point": point
+            })
+    return rows
 
 def add_row_to_table(data, conn):
     decoded_data = data.decode('utf-8')
-    data = split_row(decoded_data)
+    rows = split_row(decoded_data)
     cursor = conn.cursor()
-    try:
-        cursor.execute('''
-            INSERT INTO rssi_data (Timestamp, Source_MAC, Destination_MAC, RSSI, Point)
-            VALUES (?, ?, ?, ?, ?)
-        ''', data)
-        conn.commit()
-    except sqlite3.Error as e:
-        print("An error occurred:", e)
-        conn.rollback()
+    for row in rows:
+        try:
+            cursor.execute('''
+                   INSERT INTO rssi_data (Timestamp, Source_MAC, Destination_MAC, RSSI, Point)
+                   VALUES (?, ?, ?, ?, ?)
+               ''', (row["Timestamp"], row["Source_MAC"], row["Destination_MAC"], row["RSSI"], row["Point"]))
+            conn.commit()
+        except sqlite3.Error as e:
+            print("An error occurred:", e)
+            conn.rollback()
 
 
 def on_new_client(clientsocket):

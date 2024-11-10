@@ -25,11 +25,13 @@ def add_row_to_table(data, conn):
     data = split_row(decoded_data)
     cursor = conn.cursor()
     try:
+        data_with_location = (*data, 0)
         cursor.execute('''
-            INSERT INTO reference (Timestamp, Source_MAC, Destination_MAC, RSSI, Dictance)
-            VALUES (?, ?, ?, ?, ?)
-        ''', data)
+            INSERT INTO reference (Timestamp, Source_MAC, Destination_MAC, RSSI, Distance, Location)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', data_with_location)
         conn.commit()
+        print(data_with_location)
     except sqlite3.Error as e:
         print("An error occurred:", e)
         conn.rollback()

@@ -6,12 +6,12 @@ from path_loss_estimation import path_loss_param_calculation
 
 def calculate_estimated_position():
     nu, C = path_loss_param_calculation()
-    n = 1
+    n = 3
 
     positions = np.array([
         (0, 0),
         (n, 0),
-        (0, n)
+        (n, n)
     ])
 
     def fetch_last_9_entries(cursor, position):
@@ -21,8 +21,8 @@ def calculate_estimated_position():
            FROM rssi_data
            WHERE point = ?
            ORDER BY timestamp DESC
-           LIMIT 9
-       """, (f'{x},{y}',))
+           LIMIT 15
+       """, (f'({x},{y})',))
         return cursor.fetchall()
 
     def treat_outliers(values):
@@ -51,7 +51,7 @@ def calculate_estimated_position():
 
     rssi_values_A = [entry[0] for entry in results[(0, 0)]]
     rssi_values_B = [entry[0] for entry in results[(n, 0)]]
-    rssi_values_C = [entry[0] for entry in results[(0, n)]]
+    rssi_values_C = [entry[0] for entry in results[(n, n)]]
 
     median_rssi_A = np.median(treat_outliers(rssi_values_A))
     median_rssi_B = np.median(treat_outliers(rssi_values_B))

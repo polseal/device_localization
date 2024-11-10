@@ -19,7 +19,7 @@ def path_loss_param_calculation():
     global cursor
     conn = sqlite3.connect('database.sqlite')
     cursor = conn.cursor()
-    cursor.execute('SELECT dictance, rssi FROM reference')
+    cursor.execute('SELECT distance, rssi FROM reference WHERE location = 0')
     data = cursor.fetchall()
     conn.close()
     distance = [row[0] for row in data]
